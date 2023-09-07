@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
+
+#define SIZE 1000000
+#define NUM_ITERATIONS 10 // Number of iterations
+
+// Function to allocate memory on the stack
+void allocate_on_stack() {
+    int arr[SIZE]; // Allocate an array on the stack
+}
+
+// Function to allocate memory on the heap
+void allocate_on_heap() {
+    int *ptr = (int *) malloc(SIZE * sizeof(int)); // Allocate memory on the heap using malloc
+    free(ptr); // Deallocate memory after use to avoid memory leaks
+}
+
+int main() {
+    struct timeval start, end;
+    long long time_taken_stack = 0, time_taken_heap = 0;
+    double average_time_stack, average_time_heap;
+
+    // Repeat memory allocation on the stack
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        // Start the timer
+        gettimeofday(&start, NULL);
+
+        // Allocate memory on the stack
+        allocate_on_stack();
+
+        // Stop the timer and calculate the time taken
+        gettimeofday(&end, NULL);
+        time_taken_stack += (end.tv_sec - start.tv_sec) * 1000000LL + (end.tv_usec - start.tv_usec);
+    }
+    average_time_stack = (double) time_taken_stack / NUM_ITERATIONS;
+
+    // Repeat memory allocation on the heap
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        // Start the timer
+        gettimeofday(&start, NULL);
+
+        // Allocate memory on the heap
+        allocate_on_heap();
+
+        // Stop the timer and calculate the time taken
+        gettimeofday(&end, NULL);
+        time_taken_heap += (end.tv_sec - start.tv_sec) * 1000000LL + (end.tv_usec - start.tv_usec);
+    }
+    average_time_heap = (double) time_taken_heap / NUM_ITERATIONS;
+
+    // Print the results
+    if (average_time_stack < average_time_heap) {
+        printf("Stack allocation is faster with an average time of %f microseconds.\n", average_time_stack);
+    } else {
+        printf("Heap allocation is faster with an average time of %f microseconds.\n", average_time_heap);
+    }
+
+    return 0;
+}

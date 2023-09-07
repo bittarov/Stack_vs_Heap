@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
+
+#define SIZE 1000000
+
+// Function to allocate memory on the stack
+void allocate_on_stack() {
+    int arr[SIZE]; // Allocate an array on the stack
+}
+
+// Function to allocate memory on the heap
+void allocate_on_heap() {
+    int *ptr = (int *) malloc(SIZE * sizeof(int)); // Allocate memory on the heap using malloc
+    free(ptr); // Deallocate memory after use to avoid memory leaks
+}
+
+int main() {
+    struct timeval start, end;
+    long long time_taken;
+
+    // Measure the time taken to allocate memory on the stack
+    gettimeofday(&start, NULL);
+    allocate_on_stack();
+    gettimeofday(&end, NULL);
+    time_taken = (end.tv_sec - start.tv_sec) * 1000000LL + (end.tv_usec - start.tv_usec);
+    printf("Memory allocated on stack in %lld microseconds.\n", time_taken);
+
+    // Measure the time taken to allocate memory on the heap
+    gettimeofday(&start, NULL);
+    allocate_on_heap();
+    gettimeofday(&end, NULL);
+    time_taken = (end.tv_sec - start.tv_sec) * 1000000LL + (end.tv_usec - start.tv_usec);
+    printf("Memory allocated on heap in %lld microseconds.\n", time_taken);
+
+    return 0;
+}
